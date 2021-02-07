@@ -1,0 +1,47 @@
+<?php
+/** @var \MageSuite\ProductTile\Block\Tile\Fragment $block */
+$product = $block->getProduct();
+$priceCurrency = \Magento\Framework\App\ObjectManager::getInstance()->get(
+    \Magento\Framework\Pricing\PriceCurrencyInterface::class
+);
+$productTypeId = $product->getTypeId();
+if ($productTypeId === 'configurable') {
+    return;
+}
+?>
+
+<div class="cs-product-tile__swatch-table cs-swatch-table cs-swatch-table--single">
+    <table>
+        <thead>
+            <tr>
+                <th><?= __('SKU') ?></th>
+                <th><?= __('Availability') ?></th>
+                <th><?= __('Price') ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><?= $product->getSku() ?></td>
+                <td><?= $product->isSaleable() ? __('In stock') : __('Out of stock') ?></td>
+                <td><?= $block->getProductPrice($product) ?></td>
+                <td>
+                    <?= $this->getLayout()
+                            ->createBlock('Groomershop\SwatchTable\Block\Tile\Fragment')
+                            ->setTemplate('MageSuite_ProductTile::fragments/add-to/cart.phtml')
+                            ->setProduct($product)
+                            ->setFormClass('cs-addtocart cs-product-tile__swatch-table-addtocart')
+                            ->setShowQtySwitcher(true)
+                            ->setChild(
+                                'atc.button',
+                                $this->getLayout()
+                                ->createBlock('Magento\Framework\View\Element\Template')
+                                ->setTemplate('Magento_Catalog::addtocart/button.phtml')
+                            )
+                            ->toHtml();
+                    ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

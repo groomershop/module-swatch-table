@@ -1,0 +1,127 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// GS: Replaced in order to add swatch-table
+?>
+<?php
+/** @var \Groomershop\Swatches\Block\Product\Renderer\Listing\Configurable $block */
+$productId = $block->getProduct()->getId();
+/** @var \Magento\Swatches\ViewModel\Product\Renderer\Configurable $configurableViewModel */
+$configurableViewModel = $block->getConfigurableViewModel();
+
+$config = json_decode($block->getJsonConfig(), true);
+$swatchConfig = json_decode($block->getJsonSwatchConfig(), true);
+$sizeConfig = json_decode($block->getJsonSwatchSizeConfig(), true);
+$chooseText = $block->getChooseText();
+$classes = $block->getClasses();
+$getShowTooltip = $configurableViewModel ? $configurableViewModel->getShowSwatchTooltip() : 1;
+
+$tableData = $block->getProductChildrenTableData();
+?>
+
+<div class="swatch-opt-<?= $block->escapeHtmlAttr($productId) ?>"
+    data-role="swatch-option-<?= $block->escapeHtmlAttr($productId) ?>">
+    <?= $block->getChildBlock('swatch_attributes')
+        ->setConfig($config)
+        ->setSwatchConfig($swatchConfig)
+        ->setSizeConfig($sizeConfig)
+        ->setClasses($classes)
+        ->setMoreButtonLimit($block->getNumberSwatchesPerProduct())
+        ->setChooseText($chooseText)
+        ->toHtml();
+    ?>
+</div>
+
+<div class="cs-product-tile__swatch-table cs-swatch-table cs-swatch-table--multiple">
+    <table>
+        <thead>
+            <tr>
+                <th><?= __('SKU') ?></th>
+                <th><?= $tableData['attributeName'] ?: __('Product Variant') ?></th>
+                <th><?= __('Availability') ?></th>
+                <th><?= __('Price') ?></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($tableData['products'] as $productData): $product = $productData['product']; ?>
+                <tr
+                    <?php foreach ($productData['attributes'] as $attribute): ?>
+                    data-attribute-<?= $attribute['attributeId'] ?>="<?= $attribute['attributeValueId'] ?>"
+                    <?php endforeach; ?>
+                >
+                    <td><?= $product->getSku() ?></td>
+                    <td><?= $productData['name'] ?></td>
+                    <td><?= $productData['availability'] ?></td>
+                    <td>
+                        <div class="price-box price-final_price">
+                            <span class="price-container price-final_price tax">
+                                <span class="price-wrapper">
+                                    <span class="price"><?= $productData['price'] ?></span>
+                                </span>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <?= $this->getLayout()
+                                ->createBlock('Groomershop\SwatchTable\Block\Tile\Fragment')
+                                ->setTemplate('MageSuite_ProductTile::fragments/add-to/cart.phtml')
+                                ->setProduct($block->getProduct())
+                                ->setFormClass('cs-addtocart cs-product-tile__swatch-table-addtocart')
+                                ->setShowQtySwitcher(true)
+                                ->setChild(
+                                    'atc.button',
+                                    $this->getLayout()
+                                    ->createBlock('Magento\Framework\View\Element\Template')
+                                    ->setTemplate('Magento_Catalog::addtocart/button.phtml')
+                                )
+                                ->toHtml();
+                        ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "[data-role=swatch-option-<?= $block->escapeJs($productId) ?>]": {
+            "Magento_Swatches/js/swatch-renderer": {
+                "selectorProduct": ".product-item-details",
+                "enableControlLabel": false,
+                "jsonConfig": <?= /* @noEscape */ $block->getJsonConfig() ?>,
+                "jsonSwatchConfig": <?= /* @noEscape */ $block->getJsonSwatchConfig() ?>,
+                "mediaCallback": "<?= $block->escapeJs($block->escapeUrl($block->getMediaCallback())) ?>",
+                "showTooltip": <?= $block->escapeJs($getShowTooltip) ?>,
+                "chooseText": "<?= $block->escapeJs($chooseText) ?>",
+                "classes": {
+                    "attributeClass": "<?= $block->escapeJs($classes['attribute']) ?>",
+                    "attributeSelectedOptionLabelClass":
+                        "<?= $block->escapeJs($classes['attribute_selected_option']) ?>",
+                    "attributeOptionsWrapper": "<?= $block->escapeJs($classes['attribute_options_wrapper']) ?>",
+                    "attributeInput": "<?= $block->escapeJs($classes['attribute_input']) ?>",
+                    "optionClass": "<?= $block->escapeJs($classes['option']) ?>",
+                    "selectClass": "<?= $block->escapeJs($classes['select']) ?>",
+                    "moreButton": "<?= $block->escapeJs($classes['more_button']) ?>"
+                }
+            }
+        }
+    }
+</script>
+
+<script type="text/x-magento-init">
+    {
+        "[data-role=priceBox][data-price-box=product-id-<?= $block->escapeJs($productId) ?>]": {
+            "priceBox": {
+                "priceConfig": {
+                    "priceFormat": <?= /* @noEscape */ $block->getPriceFormatJson(); ?>,
+                    "prices": <?= /* @noEscape */ $block->getPricesJson(); ?>
+                }
+            }
+        }
+    }
+</script>

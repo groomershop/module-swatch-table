@@ -1,0 +1,21 @@
+{
+  "name": "groomershop/module-swatch-table",
+  "description": "Swatch table listing product children on product listing",
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jacek Tomaszewski",
+      "email": "jacek@jtom.me"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Groomershop\\SwatchTable\\": ""
+    }
+  }
+}

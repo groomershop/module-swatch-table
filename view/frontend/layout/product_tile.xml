@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Replace template with ours -->
+        <referenceBlock name="product.tile.details.renderers.configurable" template="Groomershop_SwatchTable::product/listing/renderer.phtml" />
+
+        <!-- Add single-swatch-table to product tile -->
+        <referenceBlock name="product.tile.container.main.details">
+            <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.single-swatch-table" template="Groomershop_SwatchTable::product/listing/single-swatch-table.phtml" after="product.tile.description.wrapper" />
+        </referenceBlock>
+    </body>
+</page>
