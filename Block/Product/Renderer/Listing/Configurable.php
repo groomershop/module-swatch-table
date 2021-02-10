@@ -18,7 +18,7 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Listing\Conf
         $stockValues = $inventory->getStocks($productsSku, $websiteCode);
         $qtyValues = $inventory->getQty($productsSku, $websiteCode);
         $priceCurrency = ObjectManager::getInstance()->get(PriceCurrencyInterface::class);
-        $attributesData = $this->getSwatchAttributesData();
+        $attributesData = $this->swatchHelper->getSwatchAttributesAsArray($this->getProduct());
         $attributes = iterator_to_array($this->helper->getAllowAttributes($this->getProduct()));
         $attributeName = count($attributesData) === 1
             ? current($attributesData)['frontend_label']
@@ -44,17 +44,18 @@ class Configurable extends \Magento\Swatches\Block\Product\Renderer\Listing\Conf
 
             $productAttributes = array_filter(
                 array_map(function($attribute) use($product, $attributesData, $attributeName) {
+                    if (!array_key_exists($attribute->getAttributeId(), $attributesData)) {
+                        return;
+                    }
                     $attributeData = $attributesData[$attribute->getAttributeId()];
                     $productAttribute = $attribute->getProductAttribute();
                     $productAttributeId = $productAttribute->getId();
-                    if (!isset($attributesData[$productAttributeId])) {
-                        return;
-                    }
+                    $productAttributeName = $attributeData['frontend_label'];
                     $productAttributeValueId = $product->getData($productAttribute->getAttributeCode());
                     $productAttributeValueName = $attributeData['options'][$productAttributeValueId];
                     $label = $attributeName
                         ? $productAttributeValueName
-                        : $attributeData['frontend_label'] . ': ' . $productAttributeValueName;
+                        : $productAttributeName . ': ' . $productAttributeValueName;
                     return [
                         'label' => $label,
                         'attributeId' => $attribute->getAttributeId(),

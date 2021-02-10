@@ -26,20 +26,40 @@ if ($productTypeId === 'configurable') {
                 <td><?= $product->isSaleable() ? __('In stock') : __('Out of stock') ?></td>
                 <td><?= $block->getProductPrice($product) ?></td>
                 <td>
-                    <?= $this->getLayout()
-                            ->createBlock('Groomershop\SwatchTable\Block\Tile\Fragment')
-                            ->setTemplate('MageSuite_ProductTile::fragments/add-to/cart.phtml')
-                            ->setProduct($product)
-                            ->setFormClass('cs-addtocart cs-product-tile__swatch-table-addtocart')
-                            ->setShowQtySwitcher(true)
-                            ->setChild(
-                                'atc.button',
-                                $this->getLayout()
-                                ->createBlock('Magento\Framework\View\Element\Template')
-                                ->setTemplate('Magento_Catalog::addtocart/button.phtml')
-                            )
-                            ->toHtml();
-                    ?>
+                    <?php if($product->isSaleable()): ?>
+                        <?= $this->getLayout()
+                                ->createBlock('Groomershop\SwatchTable\Block\Tile\Fragment')
+                                ->setTemplate('MageSuite_ProductTile::fragments/add-to/cart.phtml')
+                                ->setProduct($product)
+                                ->setFormClass('cs-addtocart cs-product-tile__swatch-table-addtocart')
+                                ->setShowQtySwitcher(true)
+                                ->setChild(
+                                    'atc.button',
+                                    $this->getLayout()
+                                    ->createBlock('Magento\Framework\View\Element\Template')
+                                    ->setTemplate('Magento_Catalog::addtocart/button.phtml')
+                                )
+                                ->toHtml();
+                        ?>
+                    <?php else: ?>
+                        <?php
+                        $icon = $block->getVar('stock_icons/display', 'Magento_Catalog')
+                            ? $this->getLayout()
+                                ->createBlock('MageSuite\ThemeHelpers\Block\Icon')
+                                ->setIconUrl($block->getVar('stock_icons/out_of_stock/icon_url', 'Magento_Catalog'))
+                                ->setCssClass('cs-swatch-table__stock-icon cs-swatch-table__stock-icon--unavailable')
+                                ->setAltText(__('Out of stock'))
+                                ->setInlined($block->getVar('stock_icons/out_of_stock/inlined', 'Magento_Catalog'))
+                                ->setLazyLoaded($block->getVar('stock_icons/out_of_stock/lazy_loaded', 'Magento_Catalog'))
+                                ->toHtml()
+                            : '';
+                        ?>
+
+                        <div class="stock cs-swatch-table__stock unavailable cs-swatch-table__stock--unavailable" title="<?= /* @escapeNotVerified */ __('Availability') ?>">
+                            <?= $icon ?>
+                            <span class="cs-swatch-table__stock-text"><?= __('Out of stock') ?></span>
+                        </div>
+                    <?php endif; ?>
                 </td>
             </tr>
         </tbody>
