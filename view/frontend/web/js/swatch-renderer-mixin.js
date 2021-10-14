@@ -32,12 +32,7 @@ define(["jquery", "underscore"], function ($, _) {
                   ']"]'
               );
               if (!input) {
-                console.error(
-                  "product attribute input couldn't be found for attributeId " +
-                    attribute.id +
-                    " in ",
-                  row
-                );
+                // If no input has been found, it probably means the product is unavailable
                 return;
               }
               $(input).val(attributeValueId);
