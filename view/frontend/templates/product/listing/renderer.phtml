@@ -39,7 +39,6 @@ $tableData = $block->getProductChildrenTableData();
     <table>
         <thead>
             <tr>
-                <th><?= __('SKU') ?></th>
                 <th><?= $tableData['attributeName'] ?: __('Product Variant') ?></th>
                 <th><?= __('Availability') ?></th>
                 <th><?= __('Price') ?></th>
@@ -53,7 +52,6 @@ $tableData = $block->getProductChildrenTableData();
                     data-attribute-<?= $attribute['attributeId'] ?>="<?= $attribute['attributeValueId'] ?>"
                     <?php endforeach; ?>
                 >
-                    <td><?= $product->getSku() ?></td>
                     <td><?= $productData['name'] ?></td>
                     <td><?= $productData['availability'] ?></td>
                     <td>
