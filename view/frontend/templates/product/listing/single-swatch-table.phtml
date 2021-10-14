@@ -14,6 +14,7 @@ if ($productTypeId === 'configurable') {
     <table>
         <thead>
             <tr>
+                <th><?= __('SKU') ?></th>
                 <th><?= __('Availability') ?></th>
                 <th><?= __('Price') ?></th>
                 <th></th>
@@ -21,6 +22,7 @@ if ($productTypeId === 'configurable') {
         </thead>
         <tbody>
             <tr>
+                <td><?= $product->getSku() ?></td>
                 <td><?= $product->isSaleable() ? __('In stock') : __('Out of stock') ?></td>
                 <td><?= $block->getProductPrice($product) ?></td>
                 <td>
