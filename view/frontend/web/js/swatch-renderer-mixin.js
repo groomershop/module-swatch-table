@@ -25,7 +25,9 @@ define(["jquery", "underscore"], function ($, _) {
           .find(".cs-swatch-table--multiple tbody tr")
           .each(function (_i, row) {
             $widget.options.jsonConfig.attributes.forEach(function (attribute) {
-              var attributeValueId = row.dataset["attribute-" + attribute.id];
+              var attributeValueId = row.getAttribute(
+                "data-attribute-" + attribute.id
+              );
               var input = row.querySelector(
                 'form.cs-addtocart .swatch-input[name="super_attribute[' +
                   attribute.id +
